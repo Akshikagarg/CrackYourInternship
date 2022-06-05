@@ -1,30 +1,28 @@
-vector<TreeNode *> generateTree(int from, int to)
-{
-    vector<TreeNode *> ret;
-    if(to - from < 0) ret.push_back(0);
-    if(to - from == 0) ret.push_back(new TreeNode(from));
-    if(to - from > 0)
-    {
-        for(int i=from; i<=to; i++)
-        {
-            vector<TreeNode *> l = generateTree(from, i-1);
-            vector<TreeNode *> r = generateTree(i+1, to);
-
-            for(int j=0; j<l.size(); j++)
-            {
-                for(int k=0; k<r.size(); k++)
-                {
-                    TreeNode * h = new TreeNode (i);
-                    h->left = l[j];
-                    h->right = r[k];
-                    ret.push_back(h);
+class Solution {
+public:
+    vector<TreeNode*> helper(int start,int end) {
+        vector<TreeNode*> v;
+        if(start > end) {
+            v.push_back(NULL);
+            return v;
+        }
+        for(int i = start; i <= end; i++){
+            auto left = helper(start,i-1);
+            auto right = helper(i+1,end);
+            for(auto l : left) {
+                for(auto r : right){
+                    TreeNode* newNode = new TreeNode(i, l, r);
+                    v.push_back(newNode);
                 }
             }
         }
+        return v;
     }
-    return ret;
-}
-
-vector<TreeNode *> generateTrees(int n) {
-    return generateTree(1, n);
-}
+    
+    vector<TreeNode*> generateTrees(int n) {
+        if(n == 0) 
+            return vector<TreeNode*>();
+        auto ans = helper(1,n);
+        return ans;
+    }
+};
